@@ -1,0 +1,15 @@
+{
+  "name": "searchskip",
+  "version": "1.0.0",
+  "description": "Search food items on Skip",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "James Perih <james@hotdang.ca>",
+  "license": "UNLICENSED",
+  "dependencies": {
+    "dotenv": "^8.0.0",
+    "node-fetch": "^2.6.0"
+  }
+}

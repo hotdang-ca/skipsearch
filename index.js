@@ -27,12 +27,16 @@ if (argv.length > 3) {
 const searchPhrase = argv[2];
 const RESTAURANT_URL = `https://api.skipthedishes.com/customer/v1/restaurants/search/web?language=en&lat=${LAT}&long=${LNG}&order_type=DELIVERY`;
 const MENU_URL = `https://api-skipthedishes.skipthedishes.com/v1/restaurants/clean-url/:cleanUrl?fullMenu=true&language=en&lat=${LAT}&long=${LNG}&order_type=DELIVERY`
+const HEADERS = {
+    'App-Token': APP_TOKEN,
+    'User-Agent': 'skipsearch (github.com)',
+};
 
-console.info(`Searching for [${searchPhrase}]...`);
+console.info(`Searching for [${searchPhrase}]...\n`);
 
 fetch(RESTAURANT_URL, {
     headers: {
-        'App-Token': APP_TOKEN,
+        ...HEADERS,
     },
 }).then((response) => {
     return response.json();
@@ -42,7 +46,7 @@ fetch(RESTAURANT_URL, {
         const { name: restaurantName, cleanUrl } = restaurant;
         fetch(MENU_URL.replace(':cleanUrl', cleanUrl), {
             headers: {
-                'App-Token': APP_TOKEN,
+                ...HEADERS,
             },
         }).then((menuResponse) => {
             return menuResponse.json();
@@ -51,12 +55,17 @@ fetch(RESTAURANT_URL, {
             menuGroups.forEach((menuGroup) => {
                 if (menuGroup.menuItems.length > 0) {
                     menuGroup.menuItems.forEach((menuItem) => {
-                        const { name, description } = menuItem;
+                        const { name, description, centsPrice, available } = menuItem;
 
                         if (name.indexOf(searchPhrase) > -1 || description.indexOf(searchPhrase) > -1) {
-                            console.log(`Matching item from ${restaurantName}`);
-                            console.log(`    Menu Item: ${name}`);
-                            console.log(`    Description: ${description}\n`);
+                            if (available) {
+                                console.log(`Matching item from ${restaurantName} (https://www.skipthedishes.com/${cleanUrl})`);
+                                console.log(`    Menu Item: ${name}`);
+                                console.log(`    Price: $${centsPrice / 100}`);
+                                console.log(`    Description: ${description}\n`);
+                            } else {
+                                console.log(menuItem);
+                            }
                         }
                     });
                 }

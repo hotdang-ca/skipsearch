@@ -1,6 +1,6 @@
 {
   "name": "searchskip",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "Search food items on Skip",
   "main": "index.js",
   "scripts": {
